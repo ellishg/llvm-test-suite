@@ -109,6 +109,30 @@ else()
   set(TEST_SUITE_USER_MODE_EMULATION "False")
 endif()
 
+option(TEST_SUITE_MACHINE_PROFILE_GENERATE "Enable machine profile generate mode" OFF)
+option(TEST_SUITE_MACHINE_FUNCTION_COVERAGE "Enable machine function coverage" OFF)
+option(TEST_SUITE_MACHINE_PROFILE_RUNTIME "Enable machine profile runtime" ON)
+mark_as_advanced(TEST_SUITE_MACHINE_FUNCTION_COVERAGE)
+mark_as_advanced(TEST_SUITE_MACHINE_PROFILE_RUNTIME)
+if(TEST_SUITE_MACHINE_PROFILE_GENERATE)
+  set(TEST_SUITE_MACHINE_PROFILE_GENERATE "True")
+  set(machine_profile_instrumentation_flags -fmachine-profile-generate)
+
+  if(TEST_SUITE_MACHINE_FUNCTION_COVERAGE)
+    list(APPEND machine_profile_instrumentation_flags -fmachine-profile-function-coverage)
+  endif()
+
+  if(NOT TEST_SUITE_MACHINE_PROFILE_RUNTIME)
+    list(APPEND machine_profile_instrumentation_flags -fno-machine-profile-runtime)
+  endif()
+
+  # TODO: Add a flag to remove the `__llvm_mipmap` section.
+  list(APPEND CFLAGS   ${machine_profile_instrumentation_flags})
+  list(APPEND CXXFLAGS ${machine_profile_instrumentation_flags})
+  list(APPEND LDFLAGS  ${machine_profile_instrumentation_flags})
+else()
+  set(TEST_SUITE_MACHINE_PROFILE_GENERATE "False")
+endif()
 
 # run type/benchmark size configuration (mostly for SPEC at the moment)
 set(TEST_SUITE_RUN_TYPE "train" CACHE STRING
