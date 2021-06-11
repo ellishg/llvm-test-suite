@@ -134,6 +134,18 @@ else()
   set(TEST_SUITE_MACHINE_PROFILE_GENERATE "False")
 endif()
 
+option(TEST_SUITE_SANCOV "Enable sanatize function coverage" OFF)
+if(TEST_SUITE_SANCOV)
+  set(TEST_SUITE_SANCOV "True")
+  set(sancov_flags -fsanitize-coverage=func,inline-bool-flag,pc-table)
+
+  list(APPEND CFLAGS   ${sancov_flags})
+  list(APPEND CXXFLAGS ${sancov_flags})
+  list(APPEND LDFLAGS  ${sancov_flags})
+else()
+  set(TEST_SUITE_SANCOV "False")
+endif()
+
 # run type/benchmark size configuration (mostly for SPEC at the moment)
 set(TEST_SUITE_RUN_TYPE "train" CACHE STRING
     "Type of benchmark inputs (may be test,train or ref)")
