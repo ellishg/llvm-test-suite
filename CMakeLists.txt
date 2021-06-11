@@ -160,6 +160,18 @@ else()
   set(TEST_SUITE_INSTRUMENT_FUNCTIONS "False")
 endif()
 
+option(TEST_SUITE_PROFILE_GENERATE_NO_VP "Enable profile without value profiling" OFF)
+if(TEST_SUITE_PROFILE_GENERATE_NO_VP)
+  set(TEST_SUITE_PROFILE_GENERATE_NO_VP "True")
+  set(profile_flags -fcs-profile-generate -mllvm -disable-vp=true)
+
+  list(APPEND CFLAGS   ${profile_flags})
+  list(APPEND CXXFLAGS ${profile_flags})
+  list(APPEND LDFLAGS  ${profile_flags})
+else()
+  set(TEST_SUITE_PROFILE_GENERATE_NO_VP "False")
+endif()
+
 # run type/benchmark size configuration (mostly for SPEC at the moment)
 set(TEST_SUITE_RUN_TYPE "train" CACHE STRING
     "Type of benchmark inputs (may be test,train or ref)")
