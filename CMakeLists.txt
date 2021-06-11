@@ -146,6 +146,20 @@ else()
   set(TEST_SUITE_SANCOV "False")
 endif()
 
+option(TEST_SUITE_INSTRUMENT_FUNCTIONS "Enable function instrumentation" OFF)
+if(TEST_SUITE_INSTRUMENT_FUNCTIONS)
+  set(TEST_SUITE_INSTRUMENT_FUNCTIONS "True")
+  set(instrument_functions_flags -finstrument-functions)
+
+  list(APPEND CFLAGS   ${instrument_functions_flags})
+  list(APPEND CXXFLAGS ${instrument_functions_flags})
+  # Manually compile cyg_profile_funcs.o
+  # clang -Oz -c cyg_profile_funcs.c
+  list(APPEND LDFLAGS  ${instrument_functions_flags} ${PROJECT_SOURCE_DIR}/cyg_profile_funcs.o)
+else()
+  set(TEST_SUITE_INSTRUMENT_FUNCTIONS "False")
+endif()
+
 # run type/benchmark size configuration (mostly for SPEC at the moment)
 set(TEST_SUITE_RUN_TYPE "train" CACHE STRING
     "Type of benchmark inputs (may be test,train or ref)")
