@@ -172,6 +172,18 @@ else()
   set(TEST_SUITE_PROFILE_GENERATE_NO_VP "False")
 endif()
 
+option(TEST_SUITE_XRAY "Enable xray profile" OFF)
+if(TEST_SUITE_XRAY)
+  set(TEST_SUITE_XRAY "True")
+  set(xray_flags -fxray-instrument -fxray-instrumentation-bundle=function-entry)
+
+  list(APPEND CFLAGS   ${xray_flags})
+  list(APPEND CXXFLAGS ${xray_flags})
+  list(APPEND LDFLAGS  ${xray_flags})
+else()
+  set(TEST_SUITE_XRAY "False")
+endif()
+
 # run type/benchmark size configuration (mostly for SPEC at the moment)
 set(TEST_SUITE_RUN_TYPE "train" CACHE STRING
     "Type of benchmark inputs (may be test,train or ref)")
